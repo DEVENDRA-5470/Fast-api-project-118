@@ -76,4 +76,25 @@ def bulk_upload_staff(db:Session=Depends(get_db)):
         db.refresh(staff)
     return {"Inserted ":len(created),"staff":created}
 
+@app.delete("/staff/{staff_id}")
+def delete_staff(staff_id:int ,db: Session = Depends(get_db)):
+    staff=db.query(models.Staff).filter(models.Staff.id==staff_id).first()
+    if not staff:
+        raise HTTPException(status_code=404)
+    db.delete(staff)
+    db.commit()
+    return {"Message":f"Staff with id :{staff_id} has been Deleted ✅ "}
+
+@app.delete("/staff")
+def delete_all_staff(confirm: bool=False,db: Session = Depends(get_db)):
+    if not confirm:
+        raise HTTPException(status_code=400, detail="This will delete All Staff records. Pass ?confirm=true to proceed")
+    staff=db.query(models.Staff).delete()
+    db.commit()
+    return {"Message":f"Deleted {staff} ✅ "}
+
+# Update and partrial update
+# @app.put()
+# @app.patch()
+
 
