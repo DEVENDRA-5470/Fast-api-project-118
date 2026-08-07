@@ -94,7 +94,21 @@ def delete_all_staff(confirm: bool=False,db: Session = Depends(get_db)):
     return {"Message":f"Deleted {staff} ✅ "}
 
 # Update and partrial update
-# @app.put()
-# @app.patch()
+@app.put("/staff/{staff_id}")
+def full_update_staff(staff_id : int ,staff: schemas.StaffCreate , db:Session= Depends(get_db)):
+    existing_staff=db.query(models.Staff).filter(models.Staff.id==staff_id).first()
+    if not existing_staff:
+        raise HTTPException(status_code=404 ,detail=f"Staff with id {staff_id} not found")
+
+    existing_staff.emp_name=staff.emp_name
+    existing_staff.emp_age=staff.emp_age
+    existing_staff.emp_city=staff.emp_city
+
+    db.commit()
+    db.refresh(existing_staff)
+    return existing_staff
+
+
+
 
 
