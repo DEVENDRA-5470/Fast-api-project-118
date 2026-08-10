@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from schemas.user import UserRegister
 from models.user import User
+from utils.security import hash_password
 
 router=APIRouter(
     prefix="/auth",
@@ -9,11 +10,13 @@ router=APIRouter(
 
 @router.post("/register")
 async def register(user: UserRegister):
+    
+    hashed_password=hash_password(user.password)
     new_user=User(
         full_name=user.full_name,
         email=user.email,
         phone=user.phone,
-        password=user.password
+        password=hashed_password
     )
     
     new_user.save()
@@ -23,9 +26,3 @@ async def register(user: UserRegister):
         "User_id":str(new_user.id)
     }
     
-@router.post("/get-users")
-async def get_user():
-    
-     return {
-            "message":"Get Successfully ✅" 
-        }
