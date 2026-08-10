@@ -1,18 +1,17 @@
-from fastapi import FastAPI,HTTPException
-from motor.motor_asyncio import AsyncIOMotorClient
-from dotenv import load_dotenv
-import os
+from fastapi import FastAPI
+from database.connection import connect_database
+from routes.auth import router as auth_router
+connect_database()
 
-load_dotenv()
-MONGO_URI=os.getenv("MONGODB_URI")
+app=FastAPI(
+    title="Tour & Travel Serivices API",
+    version="1.0.0",
+)
 
-app=FastAPI()
-client=AsyncIOMotorClient(MONGO_URI)
+app.include_router(auth_router)
+
 
 @app.get("/health")
 async def health_check():
-    try:
-        await client.admin.command("ping")
-        return {"status":"ok" , "mongodb":"Connected ✅"}
-    except Exception as e:
-        raise HTTPException(status_code=503 ,detail=f"MongoDB Connectionn failed {str(e)}")
+    return {"status":"ok" , "mongodb":"Connected ✅"}
+    
