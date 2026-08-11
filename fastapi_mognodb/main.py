@@ -5,7 +5,7 @@ from routes.get_users import router as get_user
 connect_database()
 
 app=FastAPI(
-    title="Tour & Travel Serivices API",
+    title="Tour & Travel Services API",
     version="1.0.0",
 )
 
