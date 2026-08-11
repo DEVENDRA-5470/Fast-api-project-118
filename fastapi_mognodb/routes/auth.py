@@ -1,7 +1,8 @@
-from fastapi import APIRouter
-from schemas.user import UserRegister
+from fastapi import APIRouter,HTTPException,Depends
+from schemas.user import UserRegister,UserLogin
 from models.user import User
-from utils.security import hash_password
+from utils.security import hash_password,verify_password,create_access_token
+from dependencies import *
 
 router=APIRouter(
     prefix="/auth",
@@ -25,4 +26,25 @@ async def register(user: UserRegister):
         "message":"User Registered Successfully ✅",
         "User_id":str(new_user.id)
     }
+    
+# login
+@router.post("/login")
+async def login(user:UserLogin,):
+    db_user=User.objects(email=user.email).first()
+    if not db_user:
+        raise HTTPException(status_code=401,detail="Invalid Email or password")
+    
+    password_valid=verify_password(user.password,db_user.password)
+    
+    if not password_valid:
+        raise HTTPException(status_code=401,detail="Invalid Email or password")
+    
+    access_token=create_access_token(str(db_user.id))
+    
+    return {
+        "message":"Login Successful ✅",
+        "access_token":access_token,
+        "token_type":"bearer"
+    }
+
     

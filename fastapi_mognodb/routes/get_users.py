@@ -1,5 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter,Depends
 from models.user import User
+from dependencies.auth import get_current_user
 
 router=APIRouter(
     prefix="/users",
@@ -7,7 +8,7 @@ router=APIRouter(
 )
 
 @router.get("/")
-async def get_user():
+async def get_user(current_user: User=Depends(get_current_user)):
     users=User.objects.all()
     return [{
         "id": str(user.id),
