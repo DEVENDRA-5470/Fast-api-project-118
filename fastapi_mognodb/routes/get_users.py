@@ -18,3 +18,4 @@ async def get_user(current_user: User=Depends(get_current_user)):
     }
      for user in users       
     ]
+    
