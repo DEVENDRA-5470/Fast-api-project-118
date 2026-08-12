@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request,redirect,url_for
+from flask import Flask,render_template,request,redirect,url_for,session
 import os
 import requests
 from dotenv import load_dotenv
@@ -39,9 +39,36 @@ def register():
     return render_template("register.html")
 
 
-@app.route("/login")
+@app.route("/login",methods=["GET","POST"])
 def login():
+    if request.method=="POST":
+        email=request.form.get("email")
+        password=request.form.get("password")
+        data={
+            "email":email,
+            "password":password
+        }
+        
+        try:
+            response=requests.post(f"{FASTAPI_URL}auth/login",json=data,timeout=10)
+            if response.status_code==200:
+                result=response.json()
+                session["access_token"]=result["access_token"]
+                if email.lower()=="aman@gmail.com":
+                    return redirect(url_for('admin_dashboard'))
+            return redirect(url_for("customer_dashboard"))
+        except Exception as e:
+            return str(e)
+        
     return render_template("login.html")
+
+@app.route("/admin-dashboard")
+def admin_dashboard():
+    return render_template("admin_dashboard.html")
+
+@app.route("/customer-dashboard")
+def customer_dashboard():
+    return render_template("customer_dashboard.html")
 
 if __name__=="__main__":
     app.run(port=5000,debug=True)
