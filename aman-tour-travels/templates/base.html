@@ -197,6 +197,7 @@
         </div>
 
         <!-- Right -->
+       
         <div class="hidden sm:flex items-center gap-3">
             
             <a href="{{url_for('register')}}">
@@ -208,10 +209,10 @@
             </a>
          
           <a
-            href="#contact"
-            class="inline-flex items-center gap-2 rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-teal-800 transition shadow-lg shadow-teal-700/20"
+            href="{{url_for('logout')}}"
+            class="inline-flex items-center gap-2 rounded-xl bg-red-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-red-800 transition shadow-lg shadow-red-700/20"
           >
-            Plan a Trip
+            Logout
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="w-4 h-4"

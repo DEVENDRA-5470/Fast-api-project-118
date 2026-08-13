@@ -62,6 +62,42 @@ def login():
         
     return render_template("login.html")
 
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
+@app.route("/customers")
+def customers():
+    token = session.get("access_token")
+    if not token:
+        return redirect(url_for("login"))
+    
+    headers={
+        "Authorization": f"Bearer {token}"
+    }
+    
+    try:
+        response=requests.get(f"{FASTAPI_URL}users/",headers=headers,timeout=10)
+        
+        if response.status_code==200:
+            customer=response.json()
+            
+            return render_template("customer_list.html",customer=customer)
+        
+        if response.status_code == 401:
+            session.clear()
+            return redirect(url_for("login"))
+        
+        if response.status_code==403:
+            return redirect(url_for("home"))
+        
+        return render_template("customer_list.html",customer=[],error="Unable to fetch customers")
+    
+    except requests.RequestException:
+        return render_template("customer_list.html",customer=[],error="Backend Server in not reachable")
+
 @app.route("/admin-dashboard")
 def admin_dashboard():
     return render_template("admin_dashboard.html")
