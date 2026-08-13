@@ -44,7 +44,10 @@ async def login(user:UserLogin,):
     return {
         "message":"Login Successful ✅",
         "access_token":access_token,
+        "full_name":db_user.full_name,
+        "email":db_user.email,
         "token_type":"bearer"
+        
     }
 
     

@@ -53,10 +53,14 @@ def login():
             response=requests.post(f"{FASTAPI_URL}auth/login",json=data,timeout=10)
             if response.status_code==200:
                 result=response.json()
+                
                 session["access_token"]=result["access_token"]
+                session["full_name"]=result["full_name"]
+                print(result)
+        
                 if email.lower()=="aman@gmail.com":
                     return redirect(url_for('admin_dashboard'))
-            return redirect(url_for("customer_dashboard"))
+                return redirect(url_for("customer_dashboard"))
         except Exception as e:
             return str(e)
         
