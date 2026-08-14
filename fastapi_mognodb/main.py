@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from database.connection import connect_database
 from routes.auth import router as auth_router
 from routes.get_users import router as get_user
+from routes.destination import router as destination
 connect_database()
 
 app=FastAPI(
@@ -11,6 +12,7 @@ app=FastAPI(
 
 app.include_router(auth_router)
 app.include_router(get_user)
+app.include_router(destination)
 
 @app.get("/health")
 async def health_check():
